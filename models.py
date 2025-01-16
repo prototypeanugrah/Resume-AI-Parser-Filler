@@ -1,14 +1,18 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 
 
 class ResumeData(BaseModel):
-    name: str
-    email: str
+    first_name: str
+    last_name: str
+    email: EmailStr
     skills: List[str]
     experience: List[dict]
     education: List[dict]
     achievements: List[str]
+    linkedin: str
+    github: str
+    personal_portfolio: str
 
 
 class JobListing(BaseModel):

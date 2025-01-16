@@ -6,4 +6,5 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pydantic-ai>=0.0.19",
+    "pydantic[email]>=2.10.5",
 ]

@@ -1,0 +1,291 @@
+[
+"""
+About the Company:
+
+ICON International provides clients with financial solutions built around the concept of corporate barter. We help businesses leverage their underperforming assets by trading those goods for high-value professional products/services. It's a complex and dynamic field, driven by strategy, integrity, and creativity.
+
+
+
+About the Role:
+
+We are seeking an experienced Data Scientist to join the Data Science department within the ICON Technology Group (ITG), focusing on developing and implementing solutions to streamline processes. The ideal candidate will be a key contributor and will work directly with internal stakeholders to define requirements and deliver solutions that meet stakeholder needs. ICON greatly values the productivity that comes from in-person collaboration, particularly in ITG. 
+
+
+
+Our Data Science team supports ICON’s core business by delivering solutions that increase profitability via insightful reporting and achieve cost savings through automation. We use Domo as our primary data visualization tool, giving our executives real-time views of the business and giving users actionable daily reporting. Domo is powered by data sources from ODBC SQL queries, API connectors, Excel uploads, and most notably, Hitachi’s Pentaho robust ETL engine. Candidates should be adept at pulling data from various providers and platforms (e.g., Meta, GA4, Google Campaign Manager, Adobe Analytics) via API connectors, using Domo’s ETL functionality to transform that data and designing clear dashboards to give clients real time insights about their digital media. Candidate should also be comfortable leveraging technology (typically Python) to implement automation in our processes to streamline data reporting and compress delivery timelines.
+
+
+
+Responsibilities:
+
+Work with client facing departments to understand client information needs; identify and configure data sources to feed data into our environment. 
+Maintain and improve existing Python-based systems: e.g., every week, ICON receives hundreds of log files with important but disorganized data; we employ a complex Python process to automatically ingest, compile, and transform those files into standardized weekly client reporting; candidate would continue improvements to that process. 
+Develop end-to-end solutions: identify data sources, develop API & ETL processes to generate production-ready datasets, perform data validation, and build dashboards. 
+Serve as an automation solutions architect- develop a framework for connecting and aggregating disparate data in efficient manner; streamline processes to ensure quick\real-time reporting to internal and external stakeholders; create reusable templates that can be used to support dashboard design and delivery.
+Develop and integrate internal and external client-facing reporting to ensure relevant metrics and insights are shown and understood.
+Employees are expected to adopt a schedule of being physically in office 4 to 5 days per week.
+Monitor current trends in key business areas, providing valuable insights to our Digital Media department to improve overall business performance and foster organic growth. 
+Adhere to and document standards and practices employed in delivering solutions.
+
+
+Requirements: 4-5+ years of experience, bachelor’s degree in data science, computer science, statistics, information systems, or related field.
+Experience leveraging expert Python and SQL skills in a business environment; work in predictive analytics is a plus.
+Intermediate/Advanced Excel skills (minimum vlookup, pivot tables, conditional formatting, named ranges, etc.).
+(Preferred) Experience working in digital media environment; familiar with concepts like attribution, floodlight tags, click-through rates, etc. 
+(Preferred) Experience with business intelligence and data visualization tools, such as Domo, Data Studio, etc.
+(Preferred) Experience in R, SAS, Python, MATLAB or other data analysis/statistical languages.
+Strong problem solving and analytical skills.
+Effective written communication skills - ability to express ideas clearly and concisely; Candidates shall demonstrate this by submitting a single-page resume. 
+
+
+Strong business analysis and verbal skills are a must, as this position interfaces with users at various levels of the business. Qualified candidates will demonstrate effective problem resolution skills, communicate solutions clearly and effectively and work cooperatively within the ICON Technology Group. 
+
+
+
+Equal Opportunity Statement:
+
+At ICON, we are devoted to expanding opportunities for all employees without regard to race, color, religion, gender, age, national origin, sexual orientation, gender expression, disability and any other characteristic. Each person is valued for their talents, expertise, experience and perspective.""",
+
+"""
+About the job
+First Quality was founded in 1989 and, in nearly three decades, has grown to be a global privately held company with over 4,000 employees. Its corporate offices are located in Great Neck, New York, with manufacturing facilities and offices in Pennsylvania, South Carolina, Georgia, and Canada. First Quality is a diversified family of companies manufacturing consumer products ranging from Absorbent Hygiene (adult incontinence, feminine care, and baby care), Tissue (bath and towel), and Industrial (print and packaging materials), serving institutional and retail markets throughout the world. First Quality focuses on private label and branded product lines.
+
+
+
+Our core business philosophy is built on a proud culture driven by safety and quality, respect, humility, integrity, customer focus, and teamwork. With leading edge manufacturing technologies and processes and visionary leadership, First Quality is positioned to continue significant growth in the coming years. We are seeking an experienced Machine Vision Engineer for our First Quality located in Macon, GA.
+
+
+
+This position is responsible for leading and implementing machine vision system design, changes, and best practices at assigned site and relative to product categories. These efforts include driving changes that align with all cross functional departments, best practice management, and productivity improvement efforts that ensure we are the highest quality, lowest cost producer in the market. In addition, will provide systems, methods, and trainings to ensure team members have the appropriate information, knowledge, and skills to deliver best in class machine vision capability to the marketplace.
+
+
+
+Principal Accountabilities/ Responsibilities:
+
+Works closely with technical leadership team to drive cross functional and divisional projects and solutions for their assigned category and division.
+Drives efficiency improvement and scrap reduction efforts through the application of continuous improvement tools and system designs.
+Provides design solutions and training for the effective implementation of center lining, pinning, and run to target processes using all available systems and resources.
+Implements standards and design practices for vision system and quality inspection measurements that align with all other Absorbent Hygiene (AbHy) divisions of the company.
+Drives and owns productivity projects and involves plant personnel to achieve targets across all departments.
+Provides system design expertise, training, and guidance on machine vision systems including AccuSentry, Cognex, and other industry standard tools and inspection processes.
+Delivers excellence in service and project coordination for machine vision systems within assigned division.
+Plays a key role in partnering with cross functional teams to ensure raw materials and processes are meeting specifications and design parameters.
+Ability to operate as an individual contributor and leader as needed based on business dynamics and facilitation needs.
+Supports and promotes safe practices and environmental commitments in alignment with company commitments, policies, and compliance requirements.
+Develops proposals, budgets, Capital Equipment Requests (CERs), and electronic requisition (ereq) recommendations as needed.
+Develops, implements, and facilitates training programs in machine vision system processes.
+Delivers machine vision system improvement objectives and content to meet business needs.
+Facilitates and performs machine vision system training workshops.
+Additional duties as required.
+
+
+Education and experience requirements:
+
+Bachelor's degree in Engineering
+Preferred 2 years of experience in a high-speed manufacturing environment and leading rapid continuous improvement.
+AccuSentry and Cognex machine vision system experience preferred.
+PLC and HMI programming experience preferred.
+Black Belt/Six Sigma certification preferred.
+
+
+Excellent compensation and benefit package!
+
+For immediate and confidential consideration, please visit our website at www.firstquality.com!
+
+
+
+First Quality is committed to protecting information under the care of First Quality Enterprises commensurate with leading industry standards and applicable regulations. As such, First Quality provides at least annual training regarding data privacy and security to employees who, as a result of their role specifications, may come in to contact with sensitive data.
+
+
+
+First Quality is an Equal Opportunity employer. All qualified applicants will receive consideration for employment without regard to race, color, religion, sex, national origin, disability, sexual orientation, gender identification, or protected Veteran status.""",
+
+"""
+About the job
+Machine Learning Engineer
+
+
+
+Are you an experienced Machine Learning Engineer looking to develop models that predict job performance more effectively than traditional methods? This opportunity is ideal for engineers passionate about using machine learning to solve complex, real-world problems. You'll join a team trusted by a wide range of clients, from emerging startups to leading AI labs, to train models at scale and push the boundaries of LLM capabilities.
+
+
+
+About the Company
+
+This organization is driving innovation by creating predictive models that redefine job performance assessments, attracting the attention of high-profile clients in various sectors. With robust financial backing and steady growth, this team is scaling its technology and impact rapidly, supported by significant investment from some of the most respected names in tech.
+
+
+
+About the Role
+
+As a Machine Learning Engineer, you'll focus on developing and refining models that utilize large language models and other advanced techniques. Your experience with backend development and machine learning will be essential to creating solutions that can meet the diverse and challenging needs of our clients. This is a hands-on role for someone who thrives in a fast-paced, growth-oriented environment.
+
+
+
+What We Can Offer You
+
+Collaborative environment focused on hands-on problem-solving.
+Access to cutting-edge AI and ML resources.
+Opportunities to work with high-profile clients in the tech industry.
+High-impact role with ownership over critical parts of the ML pipeline.
+Support for continuous learning and professional development.
+
+
+Key Responsibilities
+
+Develop and deploy machine learning models, particularly focused on LLMs and other transformer-based models.
+Design and implement backend services, utilizing Python and Django.
+Create and maintain efficient databases and write optimized SQL queries.
+Collaborate with cross-functional teams to understand complex requirements and develop rapid, viable solutions.
+Ensure model performance and accuracy through rigorous testing and monitoring.
+Implement and manage cloud infrastructure using GCP or AWS.
+""",
+
+"""
+About the job
+🚀 Machine Learning Engineer (Computer Vision) Opportunity – Relocation Provided! 🌟
+
+Are you a passionate Machine Learning Engineer ready to tackle cutting-edge challenges in Computer Vision? A leading tech company is hiring top talent to revolutionize industries with innovative solutions.
+
+
+
+💼 What You’ll Do:
+
+Develop and deploy advanced machine learning models with a focus on classification tasks.
+Work hands-on with LiDAR and camera technologies to create transformative applications.
+Collaborate with an expert team in a fast-paced, innovation-driven environment.
+
+
+🏙️ Location:
+
+3 days per week in the vibrant Denver office.
+Relocation assistance provided for seamless onboarding!
+💰 Compensation:
+
+Base salary of $180,000 + comprehensive benefits package.
+
+
+Why Join Us?
+
+Be part of a company that’s leading the charge in AI and Computer Vision. Your contributions will directly shape the future of innovation and make a tangible impact on the world.
+
+
+
+📩 Ready to Make Your Move?
+
+Let’s talk! Apply now for more details about this exciting opportunity.
+""",
+
+"""
+About the job
+About Ascendion
+
+Ascendion is a full-service digital engineering solutions company. We make and manage software platforms and products that power growth and deliver captivating experiences to consumers and employees. Our engineering, cloud, data, experience design, and talent solution capabilities accelerate transformation and impact for enterprise clients. Headquartered in New Jersey, our workforce of 6,000+ Ascenders delivers solutions from around the globe. Ascendion is built differently to engineer the next. 
+
+Ascendion | Engineering to elevate life
+
+We have a culture built on opportunity, inclusion, and a spirit of partnership. Come, change the world with us:
+
+Build the coolest tech for world’s leading brands
+Solve complex problems – and learn new skills
+Experience the power of transforming digital engineering for Fortune 500 clients
+Master your craft with leading training programs and hands-on experience 
+Experience a community of change makers!
+
+Join a culture of high-performing innovators with endless ideas and a passion for tech. Our culture is the fabric of our company, and it is what makes us unique and diverse. The way we share ideas, learning, experiences, successes, and joy allows everyone to be their best at Ascendion. 
+
+About the Role:
+
+
+
+Title: Data Scientist
+
+Required Experience:
+
+Candidate Will be working for the Quantum Applications team focused on customer device insights and network insights. Need for a strong ML skill set to help align with the teams AI initiatives. 
+Looking for someone with strong statistical mindset/true analyst with the minimum expectation of being able to find, identify and present insights. Second, they can automate the detections, identification on root cause from machine learning model.
+Won’t be asked to create table or power bi reports, digest data or data process but needs someone to do pure data analysis.
+ 
+
+Must Haves:
+
+Strong Statistics background 
+Data Analysis Experience
+Model Development experience (statistical model)
+Machine Learning experience
+
+
+Salary Range: The salary for this position is between $124k - $134k USD annually. Factors which may affect pay within this range may include geography/market, skills, education, experience, and other qualifications of the successful candidate. 
+
+
+
+Benefits: The Company offers the following benefits for this position, subject to applicable eligibility requirements: [medical insurance] [dental insurance] [vision insurance] [401(k) retirement plan] [long-term disability insurance] [short-term disability insurance] [5 personal day accrued each calendar year. The Paid time off benefits meet the paid sick and safe time laws that pertains to the City/ State] [10-15 day of paid vacation time] [6 paid holidays and 1 floating holiday per calendar year] [Ascendion Learning Management System]
+
+ 
+
+ Want to change the world? Let us know.
+
+Tell us about your experiences, education, and ambitions. Bring your knowledge, unique viewpoint, and creativity to the table. Let’s talk!
+
+
+
+For more information, please connect at Urvashi.dubey@ascendion.com 973 306 4395
+""",
+
+"""
+About the job
+Machine Learning Engineer 
+
+Hybrid- NYC, (with travel up to once a month) 
+
+$110,000-$170,000
+
+Tech Startup
+
+
+
+Are you an experienced Machine Learning Engineer who is eager to work on the latest advancements in conversational AI and sensor technology? Harnham is partnering with a company that is leading the charge in transforming industries by bridging the gap between digital and physical worlds.
+
+
+
+THE COMPANY 
+
+
+
+This company is revolutionizing the physical world by using sensor technology to connect AI agents with everyday objects. Their product has broad applications across many product-based industries. With a growing customer base, their products leverage real-time data to enhance business decision-making.
+
+
+
+THE ROLE 
+
+
+
+As a Machine Learning Engineer, you will be working closely with the Head of AI to design and develop AI-driven virtual assistants and chatbots that interact with the company’s innovative sensor technology. You will be responsible for building multi-agent frameworks, optimizing LLMs, and implementing Retrieval-Augmented Generation systems to support dynamic, intelligent interactions between users and sensor devices. This is a pivotal role where you’ll contribute to deploying AI solutions in real-world applications, enhancing NLP and conversational AI capabilities that connect real-world environments with digital intelligence.
+
+
+
+YOUR SKILLS AND EXPERIENCE 
+
+
+
+Experience in developing and deploying AI solutions in production environments, especially in cloud-based AI systems (AWS, GCP)
+Expertise in building and optimizing LLMs
+Proficient in natural language processing techniques, especially for chatbot and AI-powered agent development
+Familiarity with multi-agent frameworks and experience implementing Retrieval-Augmented Generation (RAG) systems for enhanced AI-driven solutions.
+Ability to integrate and manage data from diverse sources for context-aware, real-time AI responses
+Solid understanding of machine learning engineering, deep learning frameworks (e.g., TensorFlow, PyTorch), and model optimization
+Experience with edge computing solutions for real-time data processing and AI-driven interactions
+Strong communication skills to collaborate with cross-functional teams, external stakeholders, and clients
+
+
+HOW TO APPLY 
+
+Register your interest by sending your Resume to Virginia via the apply link on this page.
+
+
+
+KEYWORDS
+
+Machine Learning | LLM | Chatbot | GenAI | Artificial Intelligence | Multi-Agent Frameworks | Deploying | startup | NLP | RAG | Retrieval-Augmented Generation | Edge Computing | Real-Time AI | Machine Learning Models
+""",
+]
