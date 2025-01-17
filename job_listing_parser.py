@@ -32,6 +32,7 @@ class JobListingsParser:
             "title": str,
             "company": str,
             "location": str,
+            "job_exp": str,
             "company_overview": str,
             "job_description": str,
             "responsibilities": list,
@@ -94,7 +95,9 @@ class JobListingsParser:
         "schema": {{
             "title": str, // Title of the job description.
             "company": str, // Company name in the job description.
-            "location": str, // Whether Hybrid, Remote, or In-Office work model.
+            "location": str, // Should be of the type City, State. Example: San Francisco, CA
+            "job_type": str, // Whether Hybrid, Remote, or In-Office work model.
+            "job_exp": str, // Job experience required in years. ONLY give the number and not a sentence.
             "company_overview": str, // Information about the company.
             "job_description": str, // Job description.
             "responsibilities": List[str], // List of key responsibilities mentioned in the job description.
@@ -116,6 +119,7 @@ class JobListingsParser:
         8. DO NOT add new fields
         9. DO NOT omit any fields
         10. ALL fields must be present even if null
+        11. If job_type is not available, set it to "Hybrid"
 
         %%%%%%%%%%%%%%%%%%
         REFERENCE EXAMPLES:
@@ -137,10 +141,13 @@ class JobListingsParser:
         - Collaborate with cross-functional teams.
 
         Requirements:
+        - 2+ years work experience in a professional setting.
         - Proficient in Python and cloud technologies.
         - Strong problem-solving skills.
 
         Salary: $80,000 - $120,000
+        Job location: Bay area, San Francisco
+        Job type: Remote
 
         Apply at jobs@example.com.
         \"\"\"
@@ -149,7 +156,12 @@ class JobListingsParser:
         {{
         "title": "Software Engineer",
         "company": "Tech Startup",
-        "location": "Remote",
+        "location": [
+            "San Francisco, CA", 
+            "Bay are, CA"
+        ],
+        "job_type": "Remote",
+        "job_exp": "2+",
         "company_overview": "Join our growing team and help us build scalable, cloud-based solutions.",
         "job_description": "Are you an experienced software engineer who is eager to work on cutting-edge technologies?",
         "responsibilities": [
@@ -186,6 +198,7 @@ class JobListingsParser:
         Requirements: Proficient in Python and cloud technologies. Strong problem-solving skills.
 
         Salary: $80,000 - $120,000
+        Job location: Bay area, CA; San Francisco, CA
 
         Apply at jobs@example.com.
         \"\"\"
@@ -194,7 +207,12 @@ class JobListingsParser:
         {{
         "title": "Software Engineer",
         "company": "Tech Startup",
-        "location": "Remote",
+        "location": [
+            "San Francisco, CA", 
+            "Bay are, CA"
+        ],
+        "job_type": "Hybrid",
+        "job_exp": "",
         "company_overview": "Join our growing team and help us build scalable, cloud-based solutions.",
         "job_description": "Are you an experienced software engineer who is eager to work on cutting-edge technologies?",
         "responsibilities": [
@@ -241,6 +259,7 @@ class JobListingsParser:
                 "title",
                 "company",
                 "location",
+                "job_exp",
                 "company_overview",
                 "job_description",
                 "responsibilities",
@@ -299,10 +318,12 @@ def main(args):
         f"\nSuccessfully parsed {len(parsed_jobs)} out of {len(job_descriptions)} jobs"
     )
 
-    with open(args.output_path + ".json", "w", encoding="utf-8") as f:
-        json.dump(parsed_jobs, f, indent=2)
+    parsed_jobs_json = [job.model_dump() for job in parsed_jobs]
 
-    return parsed_jobs
+    with open(args.output_path, "w", encoding="utf-8") as f:
+        json.dump(parsed_jobs_json, f, indent=2)
+
+    # return parsed_jobs
 
     # document = llama_parser.load_data(args.input_path)
 

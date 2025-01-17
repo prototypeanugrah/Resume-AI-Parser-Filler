@@ -5,11 +5,12 @@ from typing import List, Optional
 class ResumeData(BaseModel):
     first_name: str
     last_name: str
-    email: EmailStr
-    skills: List[str]
+    email: str
+    location: str
+    skills: str  # List[str]
     experience: List[dict]
     education: List[dict]
-    achievements: List[str]
+    # achievements: List[str]
     linkedin: str
     github: str
     personal_portfolio: str
@@ -19,6 +20,7 @@ class JobListing(BaseModel):
     title: str
     company: str
     location: str
+    job_exp: str
     company_overview: str
     job_description: str
     responsibilities: List[str]

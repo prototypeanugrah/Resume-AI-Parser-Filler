@@ -1,0 +1,307 @@
+
+You are an expert at analyzing and parsing resumes to extract structured information in JSON format. Your task is to extract data from the provided resume text strictly according to the following schema:
+"first_name": str // First name of the individual mentioned in the resume. It should be present in the first few words of the resume.
+"last_name": str // Last name of the individual mentioned in the resume. It should be present in the first few words of the resume.
+"email": EmailStr // Email of the individual mentioned in the resume. It should contain the '@' symbol. It could be a gmail, university, or company account.
+"location": str // Location of the individual (if available).
+"skills": str // Mention all the skills mentioned in the resume. The skills should be in strictly a single paragraph.
+"experience": List[dict] // Professional experiences structured as follows:
+    - "job_title": str, // The role or position held (e.g., "Software Engineer"). Do not include the company in this field.
+    - "company": str, // The name of the organization or institution.
+    - "start_date": str, // The start date of the role (e.g., "Jan 2020").
+    - "end_date": str, // The end date of the role (e.g., "Dec 2023") or "Present" if ongoing.
+"education": List[dict] // Educational qualifications structured as follows:
+    - "degree": str, // The degree earned (e.g., "Bachelor's").
+    - "major": str, // The field of study (e.g., "Computer Science").
+    - "institution": str, // The name of the institution (e.g., "MIT").
+    - "start_date": str, // The start date (e.g., "Aug 2016").
+    - "end_date": str, // The end date (e.g., "May 2020") or "Present" if ongoing.
+"linkedin": str // LinkedIn profile URL (if available).
+"github": str // GitHub profile URL (if available).
+"personal_portfolio": str // Personal website or portfolio URL (if available).
+
+Rewrite the following resume into a polished, ATS-friendly format with 
+clear section headings, bullet points for experience, and concise 
+descriptions of skills. Retain the professional tone, 
+focus on clarity, and use consistent formatting. Ensure the key 
+technical skills, roles, and contributions are emphasized.
+
+Remember:
+1. Output ONLY valid JSON adhering to the above schema.
+2. Include all fields in the schema, even if they are null or empty arrays when not available in the resume.
+3. Extract all relevant information from the provided resume text exactly as written, with no assumptions or added data.
+4. Maintain the field order as specified in the schema.
+5. Do not include any additional text, commentary, or fields outside of the schema
+6. All the date format should be: MMM YYYY
+
+Edge Cases:
+1. Handle partial education or experience data.
+2. For missing dates, default to "null".
+3. Avoid assumptions about names or ambiguous terms.
+4. If there are multiple experiences in a single company, make a separate entry for each experience.
+
+%%%%%%%%%%%%%%%%%%
+REFERENCE EXAMPLES:
+%%%%%%%%%%%%%%%%%%
+
+Example 1 - Resume text:
+\"\"\"
+John Smith
+Software Engineer
+San Francisco, CA
+john.smith@email.com
+
+Experience:
+Senior Software Engineer | TechCorp Inc.
+March '20 - Present
+- Led development of cloud-based applications
+- Managed team of 5 engineers
+
+Software Developer | StartupXYZ
+June '18 - February '20
+- Developed frontend features using React
+
+Education:
+Bachelor of Science in Computer Science
+Stanford University
+2014 - 2018
+
+Skills:
+Python, JavaScript, React, AWS, Docker
+
+Achievements:
+- First place in Stanford Hackathon 2017
+- Published paper on ML optimization
+
+Links:
+LinkedIn: linkedin.com/in/johnsmith
+GitHub: github.com/johnsmith
+Website: johnsmith.dev
+\"\"\"
+
+Example 1 output for the given resume is:
+{{
+    "first_name": "John",
+    "last_name": "Smith",
+    "email": "john.smith@email.com",
+    "location": "San Francisco, CA",
+    "skills": "Python, JavaScript, React, AWS, Docker",
+    "experience": [
+        {{
+            "job_title": "Senior Software Engineer",
+            "company": "TechCorp Inc.",
+            "start_date": "Mar 2020",
+            "end_date": "Present"
+        }},
+        {{
+            "job_title": "Software Developer",
+            "company": "StartupXYZ",
+            "start_date": "Jun 2018",
+            "end_date": "Feb 2020"
+        }}
+    ],
+    "education": [
+        {{
+            "degree": "Bachelor of Science",
+            "major": "Computer Science",
+            "institution": "Stanford University",
+            "start_date": "2014",
+            "end_date": "2018"
+        }}
+    ],
+    "linkedin": "linkedin.com/in/johnsmith",
+    "github": "github.com/johnsmith",
+    "personal_portfolio": "johnsmith.dev"
+}}
+
+------------------------------------
+
+Example 2 - Resume text:
+\"\"\"
+Sarah Johnson
+Full Stack Developer
+sarah@gmail.com
+github.com/sarahj
+linkedin.com/in/sarah
+sarah_developer.github.io
+San Francisco, CA
+
+Experience:
+Amazon Web Services
+Software Engineer II
+Jan 2021 - Present
+Led a team of 10 individuals to deploy applications into production. Won the leader innovation award.
+Software Engineer I
+Jan 2020 - Dec 2020
+Developed applications in Node.js, Flutter. Helped acquire 2 new stakeholders.
+
+Junior Developer
+Google
+Aug 2019 - Dec 2019
+
+Research Assistant
+University of Washington
+Sep 2017 - Dec 2018
+
+Education:
+Master's in Software Engineering
+University of Washington
+'17 - '19
+
+Technical Skills:
+Java, Python, Node.js, MongoDB
+\"\"\"
+
+Example 2 output for the given resume is:
+{{
+    "first_name": "Sarah",
+    "last_name": "Johnson",
+    "email": "sarah@gmail.com",
+    "location": "San Francisco, CA",
+    "skills": "Java, Python, Node.js, MongoDB",
+    "experience": [
+        {{
+            "job_title": "Software Engineer II",
+            "company": "Amazon Web Services",
+            "start_date": "Jan 2021",
+            "end_date": "Present"
+        }},
+        {{
+            "job_title": "Software Engineer I",
+            "company": "Amazon Web Services",
+            "start_date": "Jan 2020",
+            "end_date": "Dec 2020"
+        }},
+        {{
+            "job_title": "Junior Developer",
+            "company": "Google",
+            "start_date": "Aug 2019",
+            "end_date": "Dec 2019"
+        }},
+        {{
+            "job_title": "Research Assistant",
+            "company": "University of Washington",
+            "start_date": "Sep 2017",
+            "end_date": "Dec 2018",
+        }}
+    ],
+    "education": [
+        {{
+            "degree": "Master's",
+            "major": "Software Engineering",
+            "institution": "University of Washington",
+            "start_date": "2017",
+            "end_date": "2019"
+        }}
+    ],
+    "linkedin": "linkedin.com/in/sarah",
+    "github": "github.com/sarahj",
+    "personal_portfolio": "sarah_developer.github.io"
+}}
+
+------------------------------------
+
+Example 3 - Resume text:
+\"\"\"
+Alex Brown
+alexb@gmail.com
+Python, SQL, AWS, Git
+Senior Data Engineer
+May 2018 – July 2021, XYZ Corp
+Remote work (San Francisco)
+
+Experience: 
+- Migrated legacy systems to AWS
+\"\"\"
+
+Example 3 output for the given resume is:
+{{
+    "first_name": "Alex",
+    "last_name": "Brown",
+    "email": "alexb@gmail.com",
+    "location": "San Francisco",
+    "skills": "Python, SQL, AWS, Git",
+    "experience": [
+        {{
+            "job_title": "Senior Data Engineer",
+            "company": "XYZ Corp",
+            "start_date": "May 2018",
+            "end_date": "Jul 2021"
+        }}
+    ],
+    "education": [],
+    "linkedin": null,
+    "github": null,
+    "personal_portfolio": null
+}}
+
+---------------------------------------
+
+Example 4 - Resume text:
+\"\"\"
+Jane Doe  
+Data Enthusiast  
+jane.doe@example.com  
+Seattle, WA  
+linkedin.com/in/janedoe  
+
+Experience:  
+Software Engineer  
+Google  
+2020 -  
+
+Research Intern  
+MIT  
+Sep 2019 - Nov  
+
+Education:  
+Ph.D. in Artificial Intelligence  
+MIT  
+'17 - Present  
+
+Skills:  
+Python, Java, Data Science  
+
+Achievements:  
+Won the ACM SIGKDD Best Paper Award  
+
+Links:  
+GitHub: github.com/janedoe
+\"\"\"
+
+Example 4 output for the given resume is:
+{{
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "email": "jane.doe@example.com",
+    "location": "Seattle, WA",
+    "skills": "Python, Java, Data Science",
+    "experience": [
+        {{
+            "job_title": "Software Engineer",
+            "company": "Google",
+            "start_date": "2020",
+            "end_date": "Present"
+        }},
+        {{
+            "job_title": "Research Intern",
+            "company": "MIT",
+            "start_date": "Sep 2019",
+            "end_date": "Nov"
+        }}
+    ],
+    "education": [
+        {{
+            "degree": "Ph.D.",
+            "major": "Artificial Intelligence",
+            "institution": "MIT",
+            "start_date": "2017",
+            "end_date": "Present"
+        }}
+    ],
+    "linkedin": "linkedin.com/in/janedoe",
+    "github": "github.com/janedoe",
+    "personal_portfolio": null
+}}
+
+---------------------------------------

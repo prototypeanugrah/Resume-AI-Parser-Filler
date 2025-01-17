@@ -1,0 +1,96 @@
+{
+  "basics": {
+    "name": "Anugrah Vaishnav",
+    "location": "Lowell, MA",
+    "phone": "+1 978-569-6430",
+    "email": "vaishnav.anugrah123@gmail.com",
+    "linkedin": "linkedin.com/in/anugrah-vaishnav",
+    "github": "anugrahvaishnav.github.io"
+  },
+  "education": [
+    {
+      "degree": "M.S.",
+      "major": "Computer Science",
+      "expected_graduation": "May 2025",
+      "university": "University of Massachusetts Lowell",
+      "location": "Lowell, MA"
+    },
+    {
+      "degree": "B.E.",
+      "major": "Electronics",
+      "years": "2017-2021",
+      "university": "Ramaiah Institute of Technology",
+      "location": "Bengaluru"
+    }
+  ],
+  "summary": "Data Science professional with hands-on experience solving complex problems in computer vision, natural language processing (NLP), and healthcare by building scalable machine learning solutions. Proficient in working with LLMs and transformer-based models, fine-tuning them for specialized tasks, and optimizing performance through deep learning and causal inference techniques. Skilled in benchmarking against state-of-the-art methods and deploying efficient pipelines to handle large-scale data with a focus on accuracy, speed, and real-world impact.",
+  "roles": [
+    "Machine Learning Engineer",
+    "Data Scientist",
+    "Data Analyst",
+    "Deep Learning Engineer",
+    "AI Engineer"
+  ],
+  "available_to_start": "May 2025",
+  "experience": [
+    {
+      "company": "Portcast",
+      "dates": "Aug 2022 - May 2023",
+      "title": "Data Scientist",
+      "description": "\u2022 Contributed to Port Arrival Forecasting efforts by integrating real-time maritime data and refining feature engineering pipelines, improving ETA prediction accuracy by 7%. Automated report generation workflows with Python and SQL, saving 10+ hours of manual work weekly, and built Tableau dashboards to monitor port delays and vessel performance.",
+      "skills": [
+        "Python",
+        "SQL",
+        "Tableau"
+      ]
+    },
+    {
+      "company": "University of Massachusetts Lowell",
+      "dates": "2019 - Present",
+      "title": "Research Assistant",
+      "description": "\u2022 Developed and implemented machine learning models for various research projects, including natural language processing, computer vision, and time series analysis. \u2022 Conducted literature reviews and presented findings at conferences.",
+      "skills": [
+        "Python",
+        "Machine Learning",
+        "Deep Learning",
+        "Natural Language Processing",
+        "Computer Vision",
+        "Time Series Analysis"
+      ]
+    }
+  ],
+  "skills": {
+    "languages": [
+      "Python (expert)",
+      "R",
+      "SQL (PostgreSQL, MySQL)",
+      "NoSQL (MongoDB, DynamoDB)",
+      "C++ (familiar)"
+    ],
+    "frameworks_libraries": [
+      "PyTorch",
+      "Tensorflow",
+      "Scikit-learn",
+      "Spark (PySpark)"
+    ],
+    "machine_learning": [
+      "Deep Learning (CNN, RNN)",
+      "Generative Modeling",
+      "Probabilistic Modeling",
+      "Time Series Forecasting",
+      "Statistics",
+      "Transformers",
+      "Computer Vision",
+      "NLP",
+      "Fine-tuning (LoRA, PEFT)",
+      "Large Language/Vision Models (LLM/LVM)",
+      "Graph Neural Networks (GNN)"
+    ],
+    "tools": [
+      "Docker",
+      "AWS",
+      "Git",
+      "Tableau"
+    ]
+  }
+}

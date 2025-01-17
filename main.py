@@ -6,10 +6,12 @@ import os
 from dotenv import load_dotenv
 from llama_parse import LlamaParse
 
-from resume_analyzer import ResumeAnalyzer
-from job_search_crawler import JobSearchCrawler
 from form_filling_agent import FormFillingAgent
+from job_listing_parser import JobListingParser
 from models import ResumeData, ApplicationForm
+from resume_analyzer import ResumeAnalyzer
+
+# from job_search_crawler import JobSearchCrawler
 
 load_dotenv()
 nest_asyncio.apply()
@@ -31,22 +33,47 @@ def main(args):
     )
 
     # Initialize components
-    analyzer = ResumeAnalyzer(model=args.model)
-    crawler = JobSearchCrawler()
+    resume_analyzer = ResumeAnalyzer(model=args.model)
+    job_listing_parser = JobListingParser(model=args.model)
     form_filler = FormFillingAgent()
 
     # Load and analyze resume
     resume_text = llama_parser.load_data(args.input_path)
+    resume_data = resume_analyzer.extract_resume_data(resume_text)
 
-    resume_data = analyzer.extract_resume_data(resume_text)
+    # Read and parse job listings
+    with open(args.job_listings_path, "r", encoding="utf-8") as file:
+        try:
+            job_descriptions = eval(file.read())
+            if not isinstance(job_descriptions, list):
+                raise ValueError("Input file must contain a list of job descriptions")
+        except Exception as e:
+            print(f"Error reading job descriptions: {e}")
+            return
 
-    # Search for jobs
-    keywords = resume_data.skills  # [:5]  # Use top 5 skills as keywords
-    location = args.location  # This could be configurable
-    job_listings = crawler.search_jobs(keywords, location)
+    # # Search for jobs
+    # keywords = resume_data.skills  # [:5]  # Use top 5 skills as keywords
+    # location = (
+    #     resume_data.location if resume_data.location else args.location
+    # )  # This could be configurable
+
+    # Parse all job listings
+    job_listings = []
+    for job_description in job_descriptions:
+        if not job_description.strip():  # Skip empty descriptions
+            continue
+
+        job_listing = job_listing_parser.extract_job_description(job_description)
+        if job_listing:
+            # Filter by location preference if specified
+            preferred_location = (
+                resume_data.location if resume_data.location else args.location
+            )
+            if preferred_location.lower() in job_listing.location.lower():
+                job_listings.append(job_listing)
 
     # Match jobs with resume
-    matched_jobs = analyzer.match_jobs(resume_data, job_listings)
+    matched_jobs = resume_analyzer.match_jobs(resume_data, job_listings)
 
     # Fill forms for matched jobs
     for job in matched_jobs:
@@ -80,7 +107,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-l",
         "--location",
-        default="Office",
+        default="Hybrid",
         choices=["Remote", "Hybrid", "Office"],
         # required=True,
         type=str,

@@ -1,20 +1,24 @@
 """_summary_
 
 Run the script using this:
-uv run resume_analyzer.py -i ./Anugrah_Resume.pdf -m mistral
+uv run resume_analyzer.py -p prompts/resume_analyzer.txt -fp prompts/fill_empty_fields_resume_analyzer.txt -m gemma2:27b -i Anugrah_Resume.pdf -o resume_new -ro raw_resume_new --max_retries 3
 """
 
 from typing import List
 import argparse
+
+# import asyncio
 import json
-import asyncio
+import logging
 import nest_asyncio
 import os
+import time
 
 from dotenv import load_dotenv
 from llama_parse import LlamaParse
 from models import ResumeData, JobListing
 from ollama import Client
+from tqdm import tqdm
 
 load_dotenv()
 nest_asyncio.apply()
@@ -24,93 +28,105 @@ llama_cloud_api_key = os.getenv("LLAMA_CLOUD_API_KEY")
 if not llama_cloud_api_key:
     raise ValueError("LLAMA_CLOUD_API_KEY not found in .env file")
 
+# Create and configure logger
+logging.basicConfig(
+    filename="newfile.log",
+    format="%(asctime)s %(message)s",
+    filemode="w",
+)
+
+# Creating an object
+logger = logging.getLogger()
+
+# Setting the threshold of logger to DEBUG
+logger.setLevel(logging.DEBUG)
+
 
 class ResumeAnalyzer:
+
     def __init__(
         self,
         model: str,
+        raw_output_path: str,
+        prompt_template: str,
+        fill_prompt_template: str,
     ):
         self.client = Client()
         self.model = model
+        self.raw_output_path = raw_output_path
+        self.prompt_template = prompt_template
+        self.fill_prompt_template = fill_prompt_template
 
-        self.resume_schema = r"""
-        You are an expert at analyzing and parsing resume and extracting helpful
-        information from the provided resume. You are a helpful assistant that 
-        extracts information from the resume. 
-        
-        You ONLY provide the information that is available in the provided 
-        resume text and NO new information is generated. The resume text is 
-        the ONLY correct information to be used. 
-        
-        Your response must be ONLY valid JSON with no additional text.
-        
-        Extract the following information from the given resume text and provide the output in JSON format:
-        
-        {
-        "first_name": 'string', // First name of the individual.
-        "last_name": 'string', // Last name of the individual.
-        "email": "string", // Email address of the individual.
-        "skills": ["string", ...], // List of skills mentioned in the resume. If there is a skills section in the resume, mention all of the mentioned skills. Provide the result as a List ONLY. Do not give a dictionary for this.
-        "experience": [ 
-            // List of professional experiences. Follow the guidelines mentioned for each field.
-            // Note: if the experience includes a university experience like research assistant, researcher role, or similar, then the role is the job_title and company is the university.
-            { "job_title": "string", // Job title of the individual (don't include the company name in the job title).
-            "company": "string", // Company name.
-            "start_date": "string" // Start of employment (e.g., "Jan 2020 - Dec 2023"). Here Jan 2020 is the start date}, ... 
-            "end_date": "string" // End of employment (e.g., "Jan 2020 - Dec 2023"). Here Dec 2023 is the end date}, ... 
-        ],
-        "education": [ 
-            // List of educational qualifications.
-            { "degree": "string", // Degree earned (like Masters or M.S., Bachelors or B.E., etc. -- do not include the major).
-            "major": "string", // Major field name (like Computer Science, Chemical, Physics, etc.)
-            "institution": "string", // Name of the institution.
-            "start_date": "string" // Start of education (if available). }, ... 
-            "end_date": "string" // End of education (if available). }, ... 
-        ],
-        "achievements": ["string", ...] // List of achievements mentioned (only description) in the resume (if available). Do not use the project descriptions here. This could be achievements like winner of some prize, or mentorship experience, etc. Only give the description here.
-        "linkedin": 'string' // LinkedIn url of the individual in the resume (if available)
-        "github": 'string' // GitHub url of the individual in the resume (if available)
-        "personal_website": 'string' // Personal website / portfolio url of the individual in the resume (if available)
+    def normalize_resume_data(
+        self,
+        resume_data: dict,
+    ) -> dict:
+        """Normalize job data to match expected schema."""
+        schema_fields = {
+            "first_name": str,
+            "last_name": str,
+            "email": str,
+            "location": str,
+            "skills": str,
+            "experience": List[str],
+            "education": List[str],
+            # "achievements": List[str],
+            "linkedin": str,
+            "github": str,
+            "personal_portfolio": str,
         }
-        """
+
+        # Create a normalized dictionary with all required fields
+        normalized = {}
+
+        # Map common field variations
+        field_mappings = {
+            "name": "first_name",
+            "github_url": "github",
+            "linkedin_url": "linkedin",
+            "personal_website": "personal_portfolio",
+            "work_experience": "experience",
+        }
+
+        # Normalize the data
+        for schema_field, field_type in schema_fields.items():
+            # Check if field exists directly
+            if schema_field in resume_data:
+                value = resume_data[schema_field]
+            else:
+                # Check mapped fields
+                mapped_value = None
+                for alt_field, correct_field in field_mappings.items():
+                    if alt_field in resume_data and correct_field == schema_field:
+                        mapped_value = resume_data[alt_field]
+                        break
+                value = mapped_value
+
+            # Set default values if field is missing
+            if value is None:
+                if field_type == list:
+                    value = []
+                elif field_type == bool:
+                    value = False
+                elif field_type == str:
+                    value = ""
+                else:
+                    value = None
+
+            normalized[schema_field] = value
+
+        return normalized
 
     def extract_resume_data(
         self,
         resume_text: str,
     ) -> ResumeData:
         prompt = f"""
-        You are an expert at analyzing and parsing resumes to extract structured information in JSON format. Your task is to extract data from the provided resume text strictly according to the following schema:
-
-        "first_name": str // First name of the individual mentioned in the resume
-        "last_name": str // Last name of the individual mentioned in the resume
-        "email": EmailStr // Email of the individual mentioned in the resume
-        "skills": List[str] // List of skills mentioned in the resume. Include only what is explicitly mentioned. Append all the skills mentioned in a single list.
-        "experience": List[dict] // Professional experiences structured as follows:
-            - "job_title": str, // The role or position held (e.g., "Software Engineer"). Do not include the company in this field.
-            - "company": str, // The name of the organization or institution.
-            - "start_date": str, // The start date of the role (e.g., "Jan 2020").
-            - "end_date": str, // The end date of the role (e.g., "Dec 2023") or "Present" if ongoing.
-        "education": List[dict] // Educational qualifications structured as follows:
-            - "degree": str, // The degree earned (e.g., "Bachelor's").
-            - "major": str, // The field of study (e.g., "Computer Science").
-            - "institution": str, // The name of the institution (e.g., "MIT").
-            - "start_date": str, // The start date (e.g., "Aug 2016").
-            - "end_date": str, // The end date (e.g., "May 2020") or "Present" if ongoing.
-        "achievements": List[str] // List of notable achievements mentioned in the resume (e.g., "Hackathon winner"). Do not include project descriptions here.
-        "linkedin": str // LinkedIn profile URL (if available).
-        "github": str // GitHub profile URL (if available).
-        "personal_portfolio": str // Personal website or portfolio URL (if available).
-
+        {self.prompt_template}
+        
         Extract the data based on this schema as accurately as possible from the resume text provided below:
         Resume text:
         {resume_text}
-        
-        Remember:
-        1. Output ONLY valid JSON adhering to the above schema.
-        2. Include all fields in the schema, even if they are null or empty arrays when not available in the resume.
-        3. Extract all relevant information from the provided resume text exactly as written, with no assumptions or added data.
-        4. Maintain the field order as specified in the schema.
-        5. Do not include any additional text, commentary, or fields outside of the schema
         """
 
         response = self.client.generate(
@@ -118,11 +134,97 @@ class ResumeAnalyzer:
             prompt=prompt,
         )
 
-        print(f"Model response:\n{response.response}")
-        exit(0)
+        try:
+            # Clean the response to ensure we only get the JSON part
+            response_text = response.response.strip()
+            if response_text.startswith("```json"):
+                response_text = response_text.split("```json")[1]
+            if response_text.endswith("```"):
+                response_text = response_text.rsplit("```", 1)[0]
+            response_text = response_text.strip()
 
-        resume_data = json.loads(response.response)
-        return ResumeData(**resume_data)
+            # Parse the JSON
+            resume_data = json.loads(response_text)
+
+            with open(self.raw_output_path, "w", encoding="utf-8") as f:
+                json.dump(resume_data, f, indent=2)
+                logger.info("Saved the raw response at: %s", self.raw_output_path)
+
+            resume_data = self.normalize_resume_data(resume_data)
+
+            # Validate the required fields are present
+            required_fields = [
+                "first_name",
+                "last_name",
+                "email",
+                "location",
+                "skills",
+                "experience",
+                "education",
+                # "achievements",
+                "linkedin",
+                "github",
+                "personal_portfolio",
+            ]
+
+            for field in required_fields:
+                if field not in resume_data:
+                    raise ValueError(f"Missing required field: {field}")
+
+            return ResumeData(**resume_data)
+        except json.JSONDecodeError as e:
+            print(f"Error parsing JSON response: {e}")
+            return None
+        except ValueError as e:
+            print(f"Validation error: {e}")
+            return None
+
+    def check_empty_fields(self, resume_data: dict) -> List[str]:
+        """Check which first-level fields are empty."""
+        empty_fields = []
+        for key, value in resume_data.items():
+            # Skip nested structures like lists
+            if isinstance(value, (list, dict)):
+                continue
+            # Check if the value is empty string
+            if isinstance(value, str) and not value.strip():
+                empty_fields.append(key)
+        return empty_fields
+
+    def fill_empty_fields(
+        self,
+        resume_text: str,
+        empty_fields: List[str],
+    ) -> dict:
+        """Fill empty fields using a specific prompt."""
+        prompt = f"""
+        {self.fill_prompt_template}
+        
+        The following fields are empty in the resume: {', '.join(empty_fields)}
+        Please extract only these specific fields from the resume text:
+        
+        Resume text:
+        {resume_text}
+        """
+
+        response = self.client.generate(
+            model=self.model,
+            prompt=prompt,
+        )
+
+        try:
+            response_text = response.response.strip()
+            if response_text.startswith("```json"):
+                response_text = response_text.split("```json")[1]
+            if response_text.endswith("```"):
+                response_text = response_text.rsplit("```", 1)[0]
+            response_text = response_text.strip()
+
+            filled_fields = json.loads(response_text)
+            return filled_fields
+        except json.JSONDecodeError as e:
+            print(f"Error parsing JSON response for filling fields: {e}")
+            return {}
 
     async def match_jobs(
         self,
@@ -134,8 +236,8 @@ class ResumeAnalyzer:
         for job in job_listings:
             prompt = f"""
             Compare this job posting with the candidate's resume and rate match 0-100:
-            Job: {job.dict()}
-            Resume: {resume_data.dict()}
+            Job: {job.model_dump()}
+            Resume: {resume_data.model_dump()}
             """
 
             response = self.client.generate(
@@ -143,7 +245,7 @@ class ResumeAnalyzer:
                 prompt=prompt,
             )
 
-            match_score = float(response.text)
+            match_score = float(response.response)
             if match_score > 70:  # threshold for good matches
                 matched_jobs.append(job)
 
@@ -152,7 +254,22 @@ class ResumeAnalyzer:
 
 def main(args):
 
-    analyzer = ResumeAnalyzer(model=args.model)
+    main_prompt_template = os.path.join(
+        args.prompt_template,
+        "resume_analyzer_main.txt",
+    )
+    fill_empty_prompt_template = os.path.join(
+        args.prompt_template,
+        "resume_analyzer_fill_empty.txt",
+    )
+    raw_output_path = os.path.join(args.output_dir, "raw_response.json")
+
+    analyzer = ResumeAnalyzer(
+        prompt_template=main_prompt_template,
+        model=args.model,
+        raw_output_path=raw_output_path,
+        fill_prompt_template=fill_empty_prompt_template,
+    )
 
     llama_parser = LlamaParse(
         api_key=llama_cloud_api_key,  # can also be set in your env as LLAMA_CLOUD_API_KEY
@@ -163,27 +280,60 @@ def main(args):
     )
 
     document = llama_parser.load_data(args.input_path)
+    retry_count = 0
+    resume_data = None
 
-    resume_data = analyzer.extract_resume_data(document)
+    with open(
+        os.path.join(args.output_dir, "raw_text.txt"),
+        "w",
+        encoding="utf-8",
+    ) as f:
+        for item in document:
+            f.write(str(item) + "\n")
 
-    # Search for jobs
-    keywords = resume_data.skills[:20]  # Use top 5 skills as keywords
-    location = args.location  # This could be configurable
+    # exit(0)
 
-    print(f"Top 5 skills:\n{keywords}")
-    print(f"Location preference: {location}")
-    # job_listings = await crawler.search_jobs(keywords, location)
+    for retry_count in tqdm(range(args.max_retries), desc="Parsing resume"):
+        if resume_data is not None:
+            break
 
-    # # Match jobs with resume
-    # matched_jobs = await analyzer.match_jobs(resume_data, job_listings)
+        resume_data = analyzer.extract_resume_data(document)
+        if resume_data is None:
+            logger.warning(
+                f"Attempt {retry_count + 1} failed to parse resume. Retrying..."
+            )
+            time.sleep(1)
 
-    # # Fill forms for matched jobs
-    # for job in matched_jobs:
-    #     if job.has_application_form:
-    #         form = ApplicationForm(job=job, fields=job.form_fields)
-    #         success = await form_filler.fill_form(form, resume_data)
-    #         if success:
-    #             print(f"Successfully filled form for {job.title} at {job.company}")
+    if resume_data is None:
+        logger.error("Failed to parse resume after maximum retries")
+        return
+
+    resume_dump = resume_data.model_dump()
+
+    # Check for empty fields
+    empty_fields = analyzer.check_empty_fields(resume_dump)
+    if empty_fields:
+        logger.info(f"Found empty fields: {empty_fields}")
+
+        # Read the fill prompt template
+        with open(fill_empty_prompt_template, "r", encoding="utf-8") as f:
+            fill_prompt_template = f.read()
+
+        # Try to fill empty fields
+        filled_fields = analyzer.fill_empty_fields(
+            document,
+            empty_fields,
+        )
+
+        # Update resume_dump with filled fields
+        resume_dump.update(filled_fields)
+
+    with open(
+        os.path.join(args.output_dir, "final_response.json"),
+        "w",
+        encoding="utf-8",
+    ) as f:
+        json.dump(resume_dump, f, indent=2)
 
 
 if __name__ == "__main__":
@@ -193,11 +343,25 @@ if __name__ == "__main__":
         description="Analyze the resume",
     )
     parser.add_argument(
+        "-p",
+        "--prompt_template",
+        type=str,
+        required=True,
+        help="Path to the prompt template.",
+    )
+    parser.add_argument(
         "-i",
         "--input_path",
         type=str,
         required=True,
         help="Path to the input resume (PDF).",
+    )
+    parser.add_argument(
+        "-o",
+        "--output_dir",
+        type=str,
+        required=True,
+        help="Directory to the output json.",
     )
     parser.add_argument(
         "-m",
@@ -207,15 +371,14 @@ if __name__ == "__main__":
         help="Name of the model to be used for parsing the resume.",
     )
     parser.add_argument(
-        "-l",
-        "--location",
-        default="Office",
-        choices=["Remote", "Hybrid", "Office"],
-        # required=True,
-        type=str,
-        help="Location preference for the candidate.",
+        "--max_retries",
+        required=True,
+        type=int,
+        help="Number of max retries for the model to generate a response.",
     )
 
     args = parser.parse_args()
+
+    os.makedirs(args.output_dir, exist_ok=True)
 
     main(args)

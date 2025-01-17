@@ -1,0 +1,123 @@
+{
+  "basics": {
+    "name": "Anugrah Vaishnav",
+    "location": "Lowell, MA",
+    "email": "vaishnav.anugrah123@gmail.com",
+    "linkedin": "linkedin.com/in/anugrah-vaishnav/",
+    "github": "github.com/prototypeanugrah",
+    "available_to_start": "May \u201925"
+  },
+  "education": [
+    {
+      "degree": "M.S. in Computer Science",
+      "institution": "University of Massachusetts Lowell",
+      "location": "Lowell, MA",
+      "start_date": "Sep \u201923",
+      "end_date": "Expected May \u201925",
+      "gpa": "3.85/4"
+    },
+    {
+      "degree": "B.E in Electronics Engineering",
+      "institution": "Ramaiah Institute of Technology, India",
+      "location": "India",
+      "start_date": "Aug \u201917",
+      "end_date": "May \u201921",
+      "gpa": "8.3/10"
+    }
+  ],
+  "skills": {
+    "languages": [
+      "Python",
+      "R",
+      "SQL"
+    ],
+    "tools": [
+      "Pandas",
+      "NumPy",
+      "PyTorch",
+      "Keras",
+      "TensorFlow",
+      "Scikit-Learn",
+      "Jupyter",
+      "PySpark",
+      "OpenCV",
+      "Docker"
+    ],
+    "data_science": [
+      "Supervised Learning",
+      "Unsupervised Learning",
+      "Semi-Supervised Learning",
+      "Deep Learning",
+      "Graph Neural Networks (GNN)",
+      "Computer Vision",
+      "Generative-AI",
+      "Natural Language Processing (NLP)",
+      "Fine-tuning (LoRA, PEFT) Large Language/Vision Models (LLM/LVM)"
+    ]
+  },
+  "experience": [
+    {
+      "title": "Data Scientist",
+      "company": "Portcast",
+      "location": "India",
+      "start_date": "Aug \u201922",
+      "end_date": "May \u201923",
+      "responsibilities": [
+        "Performed Root Cause Analysis (RCA) of maritime vessel delays and inefficiencies in report generation.",
+        "Automated report generation (Python, SQL), saving 10+ hours of weekly manual work.",
+        "Utilized data viz tools (Tableau, Superset) to create interactive dashboards, present findings to the clients."
+      ]
+    },
+    {
+      "title": "Data Scientist",
+      "company": "Equipped Analytical Intelligence",
+      "location": "India",
+      "start_date": "Nov \u201921",
+      "end_date": "Aug \u201922",
+      "responsibilities": [
+        "Automated report generation for 8 stakeholders (R, SQL), saving 10+ hours of monthly manual work.",
+        "Migrated existing data viz source code from legacy version to modern tech stack, 30% increase in efficiency.",
+        "Utilized data viz tool (R-Shiny) to create interactive dashboards, present findings to the clients."
+      ]
+    }
+  ],
+  "research": [
+    {
+      "title": "3D Endoscopy Procedure Reconstruction for VR (WIP)",
+      "advisor": "Dr. Yu Cao",
+      "start_date": "",
+      "end_date": "",
+      "description": "Developing a method to reconstruct 3D models of endoscopy procedures for use in virtual reality training.",
+      "techniques": [
+        "Computer Vision",
+        "3D Modeling",
+        "Virtual Reality"
+      ]
+    },
+    {
+      "title": "Correlated Topic Models: PyTorch Implementation",
+      "advisor": "",
+      "start_date": "Sep \u201923",
+      "end_date": "Dec \u201923",
+      "description": "Built an open-source implementation of Correlated Topic Models (CTMs) using Automatic Differentiation Variational Inference (ADVI). Achieved 10-15% faster processing times and 8-10% better accuracy for large batch sizes compared to popular libraries.",
+      "techniques": [
+        "Natural Language Processing",
+        "Machine Learning",
+        "PyTorch"
+      ]
+    },
+    {
+      "title": "Other Research Projects",
+      "advisor": "",
+      "start_date": "",
+      "end_date": "",
+      "description": "Developed and implemented various machine learning models for tasks such as text classification, image recognition, and time series forecasting.",
+      "techniques": [
+        "Deep Learning",
+        "Machine Learning",
+        "Data Analysis"
+      ]
+    }
+  ],
+  "projects": []
+}
