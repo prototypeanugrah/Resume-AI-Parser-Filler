@@ -19,7 +19,12 @@ class JobListing(BaseModel):
     title: str
     company: str
     location: str
-    description: str
+    company_overview: str
+    job_description: str
+    responsibilities: List[str]
+    requirements: List[str]
+    company_offers: List[str]
+    salary_range: str
     url: str
     has_application_form: bool = False
     form_fields: Optional[dict] = None

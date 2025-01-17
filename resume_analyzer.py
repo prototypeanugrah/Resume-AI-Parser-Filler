@@ -1,3 +1,9 @@
+"""_summary_
+
+Run the script using this:
+uv run resume_analyzer.py -i ./Anugrah_Resume.pdf -m mistral
+"""
+
 from typing import List
 import argparse
 import json
