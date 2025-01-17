@@ -23,7 +23,6 @@ class JobListing(BaseModel):
     job_description: str
     responsibilities: List[str]
     requirements: List[str]
-    company_offers: List[str]
     salary_range: str
     url: str
     has_application_form: bool = False

@@ -36,7 +36,6 @@ class JobListingsParser:
             "job_description": str,
             "responsibilities": list,
             "requirements": list,
-            "company_offers": list,
             "salary_range": str,
             "url": str,
             "has_application_form": bool,
@@ -51,7 +50,6 @@ class JobListingsParser:
             "job_title": "title",
             "description": "job_description",
             "salary": "salary_range",
-            "benefits": "company_offers",
             "apply_instructions": "url",
         }
 
@@ -101,7 +99,6 @@ class JobListingsParser:
             "job_description": str, // Job description.
             "responsibilities": List[str], // List of key responsibilities mentioned in the job description.
             "requirements": List[str], // List of minimum requirements. IMPORTANT: If requirements are in paragraph form, split them into separate items. Each requirement should be a complete, standalone statement.
-            "company_offers": List[str], // List of what the company offers (if available). What des the company value, opportunities for employess, etc.
             "salary_range": str, // Salary range in the job description (if available).
             "url": str, // Email address or application link (if available).
             "has_application_form": bool, // Whether the job requires filling out an application form.
@@ -163,7 +160,6 @@ class JobListingsParser:
             "Proficient in Python and cloud technologies.",
             "Strong problem-solving skills."
         ],
-        "company_offers": [],
         "salary_range": "$80,000 - $120,000",
         "url": "jobs@example.com",
         "has_application_form": false,
@@ -209,7 +205,6 @@ class JobListingsParser:
             "Proficient in Python and cloud technologies.",
             "Strong problem-solving skills."
         ],
-        "company_offers": [],
         "salary_range": "$80,000 - $120,000",
         "url": "jobs@example.com",
         "has_application_form": false,
@@ -250,7 +245,6 @@ class JobListingsParser:
                 "job_description",
                 "responsibilities",
                 "requirements",
-                "company_offers",
                 "salary_range",
                 "url",
                 "has_application_form",
@@ -289,7 +283,7 @@ def main(args):
             return []
 
     parsed_jobs = []
-    for job_id, job_description in tqdm(
+    for _, job_description in tqdm(
         enumerate(job_descriptions, 1),
         desc="Processing Job",
         total=len(job_descriptions),
