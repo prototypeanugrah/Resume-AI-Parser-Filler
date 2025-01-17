@@ -31,7 +31,7 @@ def main(args):
     )
 
     # Initialize components
-    analyzer = ResumeAnalyzer(model="gemma2")
+    analyzer = ResumeAnalyzer(model=args.model)
     crawler = JobSearchCrawler()
     form_filler = FormFillingAgent()
 
@@ -52,7 +52,7 @@ def main(args):
     for job in matched_jobs:
         if job.has_application_form:
             form = ApplicationForm(job=job, fields=job.form_fields)
-            success = await form_filler.fill_form(form, resume_data)
+            success = form_filler.fill_form(form, resume_data)
             if success:
                 print(f"Successfully filled form for {job.title} at {job.company}")
 
