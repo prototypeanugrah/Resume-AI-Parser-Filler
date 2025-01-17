@@ -124,7 +124,9 @@ class ResumeAnalyzer:
         prompt = f"""
         {self.prompt_template}
         
-        Extract the data based on this schema as accurately as possible from the resume text provided below:
+        Extract the data based on this schema as accurately as possible.
+        You will be provided the extracted resume text from a candidate resume.
+         from the resume text provided below:
         Resume text:
         {resume_text}
         """
