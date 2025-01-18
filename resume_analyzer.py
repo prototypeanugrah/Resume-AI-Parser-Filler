@@ -1,7 +1,7 @@
 """_summary_
 
 Run the script using this:
-uv run resume_analyzer.py -p prompts/resume_analyzer.txt -fp prompts/fill_empty_fields_resume_analyzer.txt -m gemma2:27b -i Anugrah_Resume.pdf -o resume_new -ro raw_resume_new --max_retries 3
+uv run resume_analyzer.py -p prompts/resume_analyzer.txt -fp prompts/fill_empty_fields_resume_analyzer.txt -m custom_gemma2 -i Anugrah_Resume.pdf -o resume_new -ro raw_resume_new --max_retries 3
 """
 
 from typing import List
@@ -57,6 +57,19 @@ class ResumeAnalyzer:
         self.prompt_template = prompt_template
         self.fill_prompt_template = fill_prompt_template
 
+        # Map common field variations
+        self.field_mappings = {
+            "name": "first_name",
+            "candidate_name": "first_name",
+            "github_url": "github",
+            "github_profile": "github",
+            "linkedin_url": "linkedin",
+            "linkedin_profile": "linkedin",
+            "personal_website": "personal_portfolio",
+            "work_experience": "experience",
+            "professional_experience": "experience",
+        }
+
     def normalize_resume_data(
         self,
         resume_data: dict,
@@ -70,7 +83,6 @@ class ResumeAnalyzer:
             "skills": str,
             "experience": List[str],
             "education": List[str],
-            # "achievements": List[str],
             "linkedin": str,
             "github": str,
             "personal_portfolio": str,
@@ -78,15 +90,6 @@ class ResumeAnalyzer:
 
         # Create a normalized dictionary with all required fields
         normalized = {}
-
-        # Map common field variations
-        field_mappings = {
-            "name": "first_name",
-            "github_url": "github",
-            "linkedin_url": "linkedin",
-            "personal_website": "personal_portfolio",
-            "work_experience": "experience",
-        }
 
         # Normalize the data
         for schema_field, field_type in schema_fields.items():
@@ -96,7 +99,7 @@ class ResumeAnalyzer:
             else:
                 # Check mapped fields
                 mapped_value = None
-                for alt_field, correct_field in field_mappings.items():
+                for alt_field, correct_field in self.field_mappings.items():
                     if alt_field in resume_data and correct_field == schema_field:
                         mapped_value = resume_data[alt_field]
                         break
@@ -116,6 +119,64 @@ class ResumeAnalyzer:
             normalized[schema_field] = value
 
         return normalized
+
+    def validate_name(
+        self,
+        resume_data: dict,
+    ) -> dict:
+        try:
+            resume_data_keys = resume_data.keys()
+            name_key = [key for key in resume_data_keys if "name" in key]
+            if not name_key:
+                raise ValueError("No 'name' key found in resume_dict")
+            names = resume_data.get(name_key).split("")
+            if len(names) > 1:
+                first_name, last_name = names[0], names[1]
+            resume_data["first_name"] = first_name
+            resume_data["last_name"] = last_name
+            return resume_data
+        except ValueError as e:
+            print(f"Value error in validate_name: {e}")
+            return None
+
+    def validate_profile_links(
+        self,
+        resume_data: dict,
+    ) -> dict:
+        try:
+            resume_data_keys = resume_data.keys()
+            linkedin_key = [key for key in resume_data_keys if "linkedin" in key]
+            github_key = [key for key in resume_data_keys if "github" in key]
+            if not linkedin_key:
+                resume_dict["linkedin"] = ""
+            if not github_key:
+                resume_dict["github"] = ""
+            resume_data["linkedin"] = resume_data.get(linkedin_key)
+            resume_data["github"] = resume_data.get(github_key)
+
+            del resume_data[linkedin_key]
+            del resume_data[github_key]
+            return resume_data
+        except:
+            return None
+
+    def validate_education(self, resume_data: dict) -> dict:
+        try:
+            resume_data_keys = resume_data.keys()
+            education_keys = [key for key in resume_data_keys if "education" in key]
+            if education_keys:
+                if isinstance(resume_data.get(education_keys), list):
+                    return resume_data
+                else:
+                    raise ValueError(
+                        f"Education section is of type: {type(resume_data.get(education_keys))}"
+                    )
+        except ValueError as e:
+            print(f"Value error in validate_education: {e}")
+            return None
+        
+    def validate_skills(self, resume_data:dict) -> dict:
+        
 
     def extract_resume_data(
         self,
