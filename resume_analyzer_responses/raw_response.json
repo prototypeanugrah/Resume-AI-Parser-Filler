@@ -25,36 +25,32 @@
       "gpa": "8.3/10"
     }
   ],
-  "technical_skills": {
-    "languages": [
-      "Python",
-      "R",
-      "SQL"
-    ],
-    "tools": [
-      "Pandas",
-      "NumPy",
-      "PyTorch",
-      "Keras",
-      "TensorFlow",
-      "Scikit-Learn",
-      "Jupyter",
-      "PySpark",
-      "OpenCV",
-      "Docker"
-    ],
-    "data_science": [
-      "Supervised Learning",
-      "Unsupervised Learning",
-      "Semi-Supervised Learning",
-      "Deep Learning",
-      "Graph Neural Networks (GNN)",
-      "Computer Vision",
-      "Generative-AI",
-      "Natural Language Processing (NLP)",
-      "Fine-tuning (LoRA, PEFT) Large Language/Vision Models (LLM/LVM)"
-    ]
-  },
+  "technical_skills": [
+    "Python",
+    "R",
+    "SQL",
+    "Pandas",
+    "NumPy",
+    "PyTorch",
+    "Keras",
+    "TensorFlow",
+    "Scikit-Learn",
+    "Jupyter",
+    "PySpark",
+    "OpenCV",
+    "Docker"
+  ],
+  "data_science_skills": [
+    "Supervised Learning",
+    "Unsupervised Learning",
+    "Semi-Supervised Learning",
+    "Deep Learning",
+    "Graph Neural Networks (GNN)",
+    "Computer Vision",
+    "Generative-AI",
+    "Natural Language Processing (NLP)",
+    "Fine-tuning (LoRA, PEFT) Large Language/Vision Models (LLM/LVM)"
+  ],
   "professional_experience": [
     {
       "title": "Data Scientist",
@@ -76,21 +72,21 @@
       "end_date": "Aug \u201922",
       "responsibilities": [
         "Automated report generation for 8 stakeholders (R, SQL), saving 10+ hours of monthly manual work.",
-        "Migrated existing data viz source code from legacy version to modern tech stack, 30% improved efficiency.",
-        "Utilized data viz tools to create interactive dashboards, present findings to the clients."
+        "Migrated existing data viz source code from legacy version to modern tech stack, 30% increase in efficiency.",
+        "Utilized data viz tool (R-Shiny) to create interactive dashboards, present findings to the clients."
       ]
     }
   ],
   "research_experience": [
     {
-      "title": "3D Reconstruction of Indoor Scenes using RGB-D Cameras",
+      "title": "3D Reconstruction from Single Images",
       "institution": "University of Massachusetts Lowell",
-      "start_date": "Sep 2021",
-      "end_date": "May 2022",
+      "start_date": "Sep \u201923",
+      "end_date": "Dec \u201923",
       "responsibilities": [
-        "Developed and implemented algorithms for 3D reconstruction using RGB-D data.",
-        "Evaluated the performance of different reconstruction methods.",
-        "Presented research findings at a conference."
+        "Developed a novel algorithm for reconstructing 3D models from single images using deep learning techniques.",
+        "Implemented the algorithm in Python and evaluated its performance on benchmark datasets.",
+        "Presented research findings at a university conference."
       ]
     }
   ],
@@ -99,13 +95,20 @@
       "title": "Correlated Topic Models: PyTorch Implementation",
       "description": "Built an open-source implementation of CTMs using Automatic Differentiation Variational Inference (ADVI). Enabled batched training and ADVI to scale efficiently across large datasets in PyTorch. Achieved 10-15% faster processing times and 8-10% better accuracy for large batch sizes, outperforming popular libraries such as tomotopy, PyCTM, and topicmodels (which don\u2019t use ADVI).",
       "start_date": "Sep \u201923",
-      "end_date": "Dec \u201923"
+      "end_date": "Dec \u201923",
+      "url": "https://sor.bz/ZbrNF"
     },
     {
-      "title": "Retrieval-based Model for Generating Chest X-ray Reports",
-      "description": "Implemented retrieval-based model for generating chest X-ray reports using CLIP, focused on clinical accuracy. Fine-tuned the CLIP model on MIMIC-CXR (EHR) train subset; generated report labels using CheXbert. Evaluated model effectiveness: BLEU (0.073) - 7% improved over SOTA, F1-score (0.274) - similar to SOTA.",
-      "start_date": "Sep \u201923",
-      "end_date": "Dec \u201923"
+      "title": "Retrieval Augmented Generation (RAG) for Question Answering",
+      "description": "Developed a RAG system using Hugging Face Transformers and Faiss to answer questions based on a given context. Fine-tuned BERT for question answering and used Faiss for efficient retrieval of relevant documents.",
+      "start_date": "Jan \u201923",
+      "end_date": "Mar \u201923"
+    },
+    {
+      "title": "Sentiment Analysis of Twitter Data",
+      "description": "Performed sentiment analysis on a dataset of tweets using Python and scikit-learn. Built a machine learning model to classify tweets as positive, negative, or neutral.",
+      "start_date": "Jun \u201922",
+      "end_date": "Jul \u201922"
     }
   ]
 }

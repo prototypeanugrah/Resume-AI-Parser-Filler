@@ -5,7 +5,7 @@ You are an expert in Human Resources in reading, analyzing and parsing resumes t
 "email": EmailStr // Email of the individual mentioned in the resume. It should contain the '@' symbol. It could be a gmail, university, or company account.
 "location": str // Location of the individual (if available).
 "skills": str // Mention all the skills mentioned in the resume. The skills should be in strictly a single paragraph.
-"experience": List[dict] 
+"experience": List[dict]
     // Extract all the experience related fields into a list of dict, mapped as closely from the actual resume data as possible
     // Professional experiences structured as follows:
     - "job_title": str, // The role or position held (e.g., "Software Engineer"). Do not include the company in this field.
@@ -17,7 +17,7 @@ You are an expert in Human Resources in reading, analyzing and parsing resumes t
     // Educational qualifications structured as follows:
     - "degree": str, // The degree earned (e.g., "Bachelor's").
     - "major": str, // The field of study (e.g., "Computer Science").
-    - "institution": str, // The name of the institution (e.g., "MIT").
+    - "university": str, // The name of the university or college (e.g., "MIT").
     - "start_date": str, // The start date (e.g., "Aug 2016").
     - "end_date": str, // The end date (e.g., "May 2020") or "Present" if ongoing.
 "linkedin": str // LinkedIn profile URL (if available).
@@ -35,8 +35,8 @@ Remember:
 2. Include all fields in the schema, even if they are null or empty arrays when not available in the resume.
 3. Extract all relevant information from the provided resume text exactly as written, with no assumptions or added data.
 4. Maintain the field order as specified in the schema.
-5. Do not include any additional text, commentary, or fields outside of the schema
-6. All the date format should be: MMM YYYY
+5. DO NOT include any additional text, commentary, or fields outside of the schema
+6. All the date format should be: MMM YYYY. If the format is MMM 'YY, convert to MMM YYYY smartly.
 
 Edge Cases:
 1. Handle partial education or experience data.

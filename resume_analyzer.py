@@ -70,74 +70,202 @@ class ResumeAnalyzer:
             "professional_experience": "experience",
         }
 
-    def normalize_resume_data(
-        self,
-        resume_data: dict,
-    ) -> dict:
-        """Normalize job data to match expected schema."""
-        schema_fields = {
+    def normalize_resume_data(self, resume_data: dict) -> dict:
+        """Normalize resume data to match expected schema."""
+        # Define required fields with their types
+        required_fields = {
             "first_name": str,
             "last_name": str,
             "email": str,
             "location": str,
             "skills": str,
-            "experience": List[str],
-            "education": List[str],
+            "experience": list,
+            "education": list,
             "linkedin": str,
             "github": str,
             "personal_portfolio": str,
         }
 
-        # Create a normalized dictionary with all required fields
-        normalized = {}
-
-        # Normalize the data
-        for schema_field, field_type in schema_fields.items():
-            # Check if field exists directly
-            if schema_field in resume_data:
-                value = resume_data[schema_field]
-            else:
-                # Check mapped fields
-                mapped_value = None
-                for alt_field, correct_field in self.field_mappings.items():
-                    if alt_field in resume_data and correct_field == schema_field:
-                        mapped_value = resume_data[alt_field]
-                        break
-                value = mapped_value
-
-            # Set default values if field is missing
-            if value is None:
-                if field_type == list:
-                    value = []
-                elif field_type == bool:
-                    value = False
-                elif field_type == str:
-                    value = ""
-                else:
-                    value = None
-
-            normalized[schema_field] = value
-
-        return normalized
-
-    def validate_name(
-        self,
-        resume_data: dict,
-    ) -> dict:
         try:
+            # Create a new normalized dictionary
+            normalized = {}
+
+            # Process each required field
+            for field, field_type in required_fields.items():
+                # Check if field exists directly
+                value = resume_data.get(field)
+
+                # Check mapped fields if value not found
+                if value is None:
+                    for alt_field, correct_field in self.field_mappings.items():
+                        if alt_field in resume_data and correct_field == field:
+                            value = resume_data[alt_field]
+                            break
+
+                # Set default values if field is still missing
+                if value is None:
+                    if field_type == list:
+                        value = []
+                    elif field_type == str:
+                        value = ""
+                    else:
+                        value = None
+
+                normalized[field] = value
+
+            # Remove any fields that aren't in required_fields
+            extra_fields = set(resume_data.keys()) - set(required_fields.keys())
+            if extra_fields:
+                logger.info(f"Removing non-required fields: {extra_fields}")
+
+            return normalized
+        except Exception as e:
+            logger.error(f"Error in normalize_resume_data: {e}")
+            return None
+
+    # def normalize_resume_data(
+    #     self,
+    #     resume_data: dict,
+    # ) -> dict:
+    #     """Normalize job data to match expected schema."""
+    #     schema_fields = {
+    #         "first_name": str,
+    #         "last_name": str,
+    #         "email": str,
+    #         "location": str,
+    #         "skills": str,
+    #         "experience": List[str],
+    #         "education": List[str],
+    #         "linkedin": str,
+    #         "github": str,
+    #         "personal_portfolio": str,
+    #     }
+
+    #     # Create a normalized dictionary with all required fields
+    #     normalized = {}
+
+    #     # Normalize the data
+    #     for schema_field, field_type in schema_fields.items():
+    #         # Check if field exists directly
+    #         if schema_field in resume_data:
+    #             value = resume_data[schema_field]
+    #         else:
+    #             # Check mapped fields
+    #             mapped_value = None
+    #             for alt_field, correct_field in self.field_mappings.items():
+    #                 if alt_field in resume_data and correct_field == schema_field:
+    #                     mapped_value = resume_data[alt_field]
+    #                     break
+    #             value = mapped_value
+
+    #         # Set default values if field is missing
+    #         if value is None:
+    #             if field_type == list:
+    #                 value = []
+    #             elif field_type == bool:
+    #                 value = False
+    #             elif field_type == str:
+    #                 value = ""
+    #             else:
+    #                 value = None
+
+    #         normalized[schema_field] = value
+
+    #     return normalized
+
+    def validate_name(self, resume_data: dict) -> dict:
+        try:
+            first_name, last_name = "", ""
             resume_data_keys = resume_data.keys()
-            name_key = [key for key in resume_data_keys if "name" in key]
-            if not name_key:
-                raise ValueError("No 'name' key found in resume_dict")
-            names = resume_data.get(name_key).split("")
-            if len(names) > 1:
-                first_name, last_name = names[0], names[1]
+
+            # Check for basic_information first
+            if "basic_information" in resume_data_keys:
+                basic_info = resume_data["basic_information"]
+                if "name" in basic_info:
+                    names = basic_info["name"].split()
+                    if len(names) >= 2:
+                        first_name, last_name = names[0], " ".join(names[1:])
+                    else:
+                        first_name = names[0]
+
+                    # Copy other basic information to root level
+                    for key, value in basic_info.items():
+                        if key != "name":
+                            resume_data[key] = value
+
+                    # Delete the basic_information container
+                    del resume_data["basic_information"]
+                else:
+                    raise ValueError("No name field found in basic_information")
+            else:
+                # Fallback to checking direct name fields
+                name_keys = [key for key in resume_data_keys if "name" in key.lower()]
+
+                if not name_keys:
+                    raise ValueError("No name field found in resume data")
+
+                # Try to find the most specific name field
+                if "full_name" in name_keys:
+                    names = resume_data["full_name"].split()
+                elif "name" in name_keys:
+                    names = resume_data["name"].split()
+                else:
+                    names = resume_data[name_keys[0]].split()
+
+                if len(names) >= 2:
+                    first_name = names[0]
+                    last_name = " ".join(names[1:])
+                else:
+                    first_name = names[0]
+                    last_name = ""
+
+                # Remove old name fields
+                for key in name_keys:
+                    if key not in ["first_name", "last_name"]:
+                        del resume_data[key]
+
+            # Set the normalized name fields
             resume_data["first_name"] = first_name
             resume_data["last_name"] = last_name
+
             return resume_data
-        except ValueError as e:
-            print(f"Value error in validate_name: {e}")
-            return None
+        except Exception as e:
+            logger.error(f"Error in validate_name: {e}")
+            return resume_data
+
+    # def validate_name(
+    #     self,
+    #     resume_data: dict,
+    # ) -> dict:
+    #     try:
+    #         first_name, last_name = "", ""
+    #         resume_data_keys = resume_data.keys()
+    #         name_key = [
+    #             key for key in resume_data_keys if "name" in key or "information" in key
+    #         ]
+    #         if not name_key:
+    #             raise ValueError("No 'name' key found in resume_dict")
+    #         if len(name_key) == 1:
+    #             name_key = name_key[0]
+    #             names = resume_data.get(name_key).split()
+    #             if len(names) >= 2:
+    #                 first_name, last_name = names[0], " ".join(names[1:])
+    #             else:
+    #                 first_name, last_name = names[0], ""
+    #         else:
+    #             raise ValueError("Multiple 'name' key found in resume_dict")
+
+    #         resume_data["first_name"] = first_name
+    #         resume_data["last_name"] = last_name
+
+    #         for key in name_keys:
+    #             if key not in ["first_name", "last_name"]:
+    #                 del resume_data[key]
+
+    #         return resume_data
+    #     except ValueError as e:
+    #         print(f"Value error in validate_name: {e}")
+    #         return None
 
     def validate_profile_links(
         self,
@@ -147,25 +275,54 @@ class ResumeAnalyzer:
             resume_data_keys = resume_data.keys()
             linkedin_key = [key for key in resume_data_keys if "linkedin" in key]
             github_key = [key for key in resume_data_keys if "github" in key]
+
             if not linkedin_key:
-                resume_dict["linkedin"] = ""
+                resume_data["linkedin"] = ""
             if not github_key:
-                resume_dict["github"] = ""
+                resume_data["github"] = ""
+
+            assert (
+                len(linkedin_key) == 1
+            ), f"Length of linkedin key: {len(linkedin_key)}"
+            assert len(github_key) == 1, f"Length of github key: {len(github_key)}"
+
+            linkedin_key = linkedin_key[0]
+            github_key = github_key[0]
+
             resume_data["linkedin"] = resume_data.get(linkedin_key)
             resume_data["github"] = resume_data.get(github_key)
 
-            del resume_data[linkedin_key]
-            del resume_data[github_key]
+            if linkedin_key != "linkedin":
+                del resume_data[linkedin_key]
+            if github_key != "github":
+                del resume_data[github_key]
+
             return resume_data
-        except:
-            return None
+        except Exception as e:
+            print(f"Exception: {e}")
+            return resume_data
 
     def validate_education(self, resume_data: dict) -> dict:
         try:
             resume_data_keys = resume_data.keys()
             education_keys = [key for key in resume_data_keys if "education" in key]
-            if education_keys:
-                if isinstance(resume_data.get(education_keys), list):
+
+            if not education_keys:
+                resume_data["education"] = []
+                return resume_data
+
+            if len(education_keys) == 1:
+                education_key = education_keys[0]
+
+                if isinstance(resume_data.get(education_key), list):
+                    resume_data["education"] = self.validate_education_sub(
+                        resume_data.get(education_key)
+                    )
+
+                    # Delete old key if it's different from 'education'
+                    if education_key != "education":
+                        del resume_data[education_key]
+
                     return resume_data
                 else:
                     raise ValueError(
@@ -173,10 +330,173 @@ class ResumeAnalyzer:
                     )
         except ValueError as e:
             print(f"Value error in validate_education: {e}")
-            return None
-        
-    def validate_skills(self, resume_data:dict) -> dict:
-        
+            return resume_data
+
+    def validate_education_sub(self, education_list: List) -> List:
+        valid_fields = [
+            "degree",
+            "major",
+            "university",
+            "location",
+            "start_date",
+            "end_date",
+        ]
+        try:
+            validated_education = []
+            for sub_education in education_list:
+                # Create new dict with only valid fields
+                validated_entry = {}
+                for field in valid_fields:
+                    validated_entry[field] = sub_education.get(field, "")
+                validated_education.append(validated_entry)
+            return validated_education
+        except Exception as e:
+            print(f"Exception: {e}")
+            return resume_data
+
+    # def validate_skills(self, resume_data: dict) -> dict:
+    #     try:
+    #         resume_data_keys = resume_data.keys()
+    #         skills_keys = [key for key in resume_data_keys if "skill" in key]
+
+    #         if not skills_keys:
+    #             resume_data["skills"] = ""
+    #             return resume_data
+
+    #         skills_str = ""
+    #         if len(skills_keys) > 1:
+    #             # Combine all skills into a single string
+    #             all_skills = []
+    #             for key in skills_keys:
+    #                 if isinstance(resume_data[key], list):
+    #                     all_skills.extend(resume_data[key])
+    #                 elif isinstance(resume_data[key], str):
+    #                     all_skills.append(resume_data[key])
+    #             skills_str = ", ".join(all_skills)
+    #             # Update resume data with combined skills
+    #             resume_data["skills"] = skills_str
+    #             # Remove old skill keys
+    #             for key in skills_keys:
+    #                 if key != "skills":
+    #                     del resume_data[key]
+    #         return resume_data
+    #     except Exception as e:
+    #         print(f"Error in validate_skills: {e}")
+    #         return None
+
+    def validate_skills(self, resume_data: dict) -> dict:
+        try:
+            resume_data_keys = resume_data.keys()
+            skills_keys = [key for key in resume_data_keys if "skill" in key.lower()]
+
+            if not skills_keys:
+                resume_data["skills"] = ""
+                return resume_data
+
+            all_skills = []
+            for key in skills_keys:
+                skills_data = resume_data[key]
+                if isinstance(skills_data, dict):
+                    # Handle nested skills categories
+                    for category_skills in skills_data.values():
+                        if isinstance(category_skills, list):
+                            all_skills.extend(category_skills)
+                        elif isinstance(category_skills, str):
+                            all_skills.append(category_skills)
+                elif isinstance(skills_data, list):
+                    all_skills.extend(skills_data)
+                elif isinstance(skills_data, str):
+                    all_skills.append(skills_data)
+
+            # Join all skills into a single string
+            skills_str = ", ".join(all_skills)
+
+            # Update resume data with combined skills
+            resume_data["skills"] = skills_str
+
+            # Remove old skill keys
+            for key in skills_keys:
+                if key != "skills":
+                    del resume_data[key]
+
+            return resume_data
+        except Exception as e:
+            logger.error(f"Error in validate_skills: {e}")
+            return resume_data
+
+    def validate_experience(self, resume_data: dict) -> dict:
+        try:
+            # Find all experience-related keys
+            resume_data_keys = resume_data.keys()
+            exp_keys = [key for key in resume_data_keys if "experience" in key]
+
+            if not exp_keys:
+                resume_data["experience"] = []
+                return resume_data
+
+            # Define valid fields and field mappings
+            valid_fields = ["job_title", "company", "start_date", "end_date"]
+            field_mappings = {
+                "title": "job_title",
+                "position": "job_title",
+                "employer": "company",
+                "organization": "company",
+                "institution": "company",
+                "from_date": "start_date",
+                "to_date": "end_date",
+            }
+
+            # Combine all experiences
+            all_experiences = []
+            for key in exp_keys:
+                if isinstance(resume_data[key], list):
+                    experiences = resume_data[key]
+                    for exp in experiences:
+                        normalized_exp = {}
+
+                        # Map and validate fields
+                        for field in valid_fields:
+                            # Check direct field name
+                            value = exp.get(field, "")
+
+                            # Check mapped field names if value is empty
+                            if not value:
+                                for alt_field, correct_field in field_mappings.items():
+                                    if alt_field in exp and correct_field == field:
+                                        value = exp[alt_field]
+                                        break
+
+                            normalized_exp[field] = value
+
+                        all_experiences.append(normalized_exp)
+
+            # Update resume data with combined experiences
+            resume_data["experience"] = all_experiences
+
+            # Remove old experience keys
+            for key in exp_keys:
+                if key != "experience":
+                    del resume_data[key]
+
+            return resume_data
+
+        except Exception as e:
+            print(f"Error in validate_experience: {e}")
+            return resume_data
+
+    def validate_response_format(self, resume_data) -> dict:
+        # Clean the response to ensure we only get the JSON part
+        response_text = resume_data.strip()
+        if response_text.startswith("```json"):
+            response_text = response_text.split("```json")[1]
+        if response_text.endswith("```"):
+            response_text = response_text.rsplit("```", 1)[0]
+        response_text = response_text.strip()
+
+        # Parse the JSON
+        resume_data = json.loads(response_text)
+
+        return resume_data
 
     def extract_resume_data(
         self,
@@ -196,24 +516,50 @@ class ResumeAnalyzer:
             model=self.model,
             prompt=prompt,
         )
+        response_text = response.response
 
         try:
-            # Clean the response to ensure we only get the JSON part
-            response_text = response.response.strip()
-            if response_text.startswith("```json"):
-                response_text = response_text.split("```json")[1]
-            if response_text.endswith("```"):
-                response_text = response_text.rsplit("```", 1)[0]
-            response_text = response_text.strip()
-
-            # Parse the JSON
-            resume_data = json.loads(response_text)
+            resume_data = self.validate_response_format(response_text)
 
             with open(self.raw_output_path, "w", encoding="utf-8") as f:
                 json.dump(resume_data, f, indent=2)
                 logger.info("Saved the raw response at: %s", self.raw_output_path)
 
+            resume_data = self.validate_name(resume_data)
+            if resume_data is None:
+                raise ValueError("Failed to validate response format")
+            else:
+                logger.info("Validate name invoked. Passed")
+
+            resume_data = self.validate_experience(resume_data)
+            if resume_data is None:
+                raise ValueError("Failed to validate response format")
+            else:
+                logger.info("Validate experience invoked. Passed")
+
+            resume_data = self.validate_education(resume_data)
+            if resume_data is None:
+                raise ValueError("Failed to validate response format")
+            else:
+                logger.info("Validate education invoked. Passed")
+
+            resume_data = self.validate_skills(resume_data)
+            if resume_data is None:
+                raise ValueError("Failed to validate response format")
+            else:
+                logger.info("Validate skills invoked. Passed")
+
+            resume_data = self.validate_profile_links(resume_data)
+            if resume_data is None:
+                raise ValueError("Failed to validate response format")
+            else:
+                logger.info("Validate profile invoked. Passed")
+
             resume_data = self.normalize_resume_data(resume_data)
+                if resume_data is None:
+                    raise ValueError("Failed to validate response format")
+                else:
+                    logger.info("Normalize resume invoked. Passed")
 
             # Validate the required fields are present
             required_fields = [
@@ -230,9 +576,13 @@ class ResumeAnalyzer:
                 "personal_portfolio",
             ]
 
-            for field in required_fields:
-                if field not in resume_data:
-                    raise ValueError(f"Missing required field: {field}")
+            # for field in resume_data.keys():
+            #     if field not in required_fields:
+            #         del resume_data[field]
+
+            # for field in required_fields:
+            #     if field not in resume_data:
+            #         raise ValueError(f"Missing required field: {field}")
 
             return ResumeData(**resume_data)
         except json.JSONDecodeError as e:
@@ -435,8 +785,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--max_retries",
-        required=True,
         type=int,
+        default=3,
         help="Number of max retries for the model to generate a response.",
     )
 

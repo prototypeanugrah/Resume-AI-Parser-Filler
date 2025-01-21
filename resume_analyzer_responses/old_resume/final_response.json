@@ -1,0 +1,68 @@
+{
+  "first_name": "Anugrah",
+  "last_name": "Vaishnav",
+  "email": "vaishnav.anugrah123@gmail.com",
+  "location": "Lowell, MA",
+  "skills": [
+    "Python",
+    "R",
+    "SQL",
+    "Pandas",
+    "NumPy",
+    "PyTorch",
+    "Keras",
+    "TensorFlow",
+    "Scikit-Learn",
+    "Jupyter",
+    "PySpark",
+    "OpenCV",
+    "Docker",
+    "Supervised Learning",
+    "Unsupervised Learning",
+    "Semi-Supervised Learning",
+    "Deep Learning",
+    "Graph Neural Networks (GNN)",
+    "Computer Vision",
+    "Generative-AI",
+    "Natural Language Processing (NLP)",
+    "Fine-tuning (LoRA, PEFT) Large Language/Vision Models (LLM/LVM)"
+  ],
+  "experience": [
+    {
+      "job_title": "Data Scientist",
+      "company": "Portcast",
+      "start_date": "Aug \u201922",
+      "end_date": "May \u201923"
+    },
+    {
+      "job_title": "Data Scientist",
+      "company": "Equipped Analytical Intelligence",
+      "start_date": "Nov \u201921",
+      "end_date": "Aug \u201922"
+    }
+  ],
+  "education": [
+    {
+      "degree": "M.S.",
+      "major": "Computer Science",
+      "university": "University of Massachusetts Lowell",
+      "location": "Lowell, MA",
+      "start_date": "Sep \u201923",
+      "end_date": "Expected May \u201925"
+    },
+    {
+      "degree": "B.E",
+      "major": "Electronics Engineering",
+      "university": "Ramaiah Institute of Technology",
+      "location": "India",
+      "start_date": "Aug \u201917",
+      "end_date": "May \u201921"
+    }
+  ],
+  "linkedin": "linkedin.com/in/anugrah-vaishnav/",
+  "github": "github.com/prototypeanugrah",
+  "personal_portfolio": [
+    "github.com/prototypeanugrah",
+    "linkedin.com/in/anugrah-vaishnav/"
+  ]
+}
