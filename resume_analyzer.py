@@ -1,7 +1,14 @@
 """_summary_
 
 Run the script using this:
-uv run resume_analyzer.py -p prompts/resume_analyzer.txt -fp prompts/fill_empty_fields_resume_analyzer.txt -m custom_gemma2 -i Anugrah_Resume.pdf -o resume_new -ro raw_resume_new --max_retries 3
+uv run resume_analyzer.py
+    -p prompts/resume_analyzer.txt
+    -fp prompts/fill_empty_fields_resume_analyzer.txt
+    -m custom_gemma2
+    -i Anugrah_Resume.pdf
+    -o resume_new
+    -ro raw_resume_new
+    --max_retries 3
 """
 
 from typing import List
@@ -352,7 +359,7 @@ class ResumeAnalyzer:
             return validated_education
         except Exception as e:
             print(f"Exception: {e}")
-            return resume_data
+            # return resume_data
 
     # def validate_skills(self, resume_data: dict) -> dict:
     #     try:
@@ -556,10 +563,10 @@ class ResumeAnalyzer:
                 logger.info("Validate profile invoked. Passed")
 
             resume_data = self.normalize_resume_data(resume_data)
-                if resume_data is None:
-                    raise ValueError("Failed to validate response format")
-                else:
-                    logger.info("Normalize resume invoked. Passed")
+            if resume_data is None:
+                raise ValueError("Failed to validate response format")
+            else:
+                logger.info("Normalize resume invoked. Passed")
 
             # Validate the required fields are present
             required_fields = [
